@@ -3,6 +3,9 @@
     constructor() {
 
         //private attribute
+        this._lastOperator = '';
+        this._lastNumber = '';
+
         this._operation = [];
         this._locale = 'pt-BR';
         this._displayCalcEl = document.querySelector(".display");
@@ -14,7 +17,7 @@
     }
 
     initialize(){
-
+        //data&hora
         this.setDisplayDateTime1();
 
 
@@ -24,17 +27,36 @@
 
         }, 1000);
 
+        this.setLastNumberToDisplay();
+
+    }
+
+    initKeyboard(){
+
+        document.addEventListener('keyup', e=> {
+
+            console.log(e.key);
+
+        });
+
+
     }
 
     clearAll(){
 
         this._operation = [];
 
+        this._lastNumber = '';
+        this._lastOperator = '';
+
+        this.setLastNumberToDisplay();
     }
 
     clearEntry(){
 
         this._operation.pop();
+
+        this.setLastNumberToDisplay();
 
     }
 
@@ -52,14 +74,106 @@
 
     isOperator(value) {
 
-        return (['+', '-', 'x', '÷'].indexOf(value) > -1);
+        return (['+', '-', '*', '/'].indexOf(value) > -1);
+
+    }
+
+    pushOperation(value){
+
+        this._operation.push(value);
+
+        if (this._operation.length > 3) {
+
+            this.calc();
+
+        }
+
+    }
+
+    getResult(){
+        try {
+            return eval(this._operation.join(""));
+        } catch (e) {
+            setTimeout(()=>{
+                this.setError();
+            },1);
+
+        }
+    }
+
+    calc(){
+
+        let last = "";
+
+        this._lastOperator = this.getLastItem();
+
+        if (this._operation.length < 3 ){
+
+            let firstItem = this._operation[0];
+            this._operation = [firstItem, this._lastOperator, this._lastNumber];
+
+        }
+
+        if (this._operation.length > 3){
+
+            last = this._operation.pop();
+
+            this._lastNumber = this.getResult();
+
+        } else if (this._operation.length == 3) {
+
+            this._lastNumber = this.getLastItem(false);
+
+        }
+
+
+        let result = this.getResult();
+
+        this._operation = [result];
+
+        if (last) this._operation.push(last);
+
+        this.setLastNumberToDisplay();
+
+    }
+
+    getLastItem(isOperator = true){
+
+        let lastItem;
+
+        for (let i = this._operation.length -1; i >= 0; i--) {
+
+            if (this.isOperator(this._operation[i]) == isOperator){
+            lastItem = this._operation[i];
+            break;
+
+            }
+
+        }
+
+        if (!lastItem) {
+
+            lastItem = (isOperator) ? this._lastOperator : this._lastNumber;
+
+        }
+
+        return lastItem;
+    }
+
+    setLastNumberToDisplay(){
+
+        let lastNumber = this.getLastItem(false);
+
+        if (!lastNumber) lastNumber = 0;
+
+        this.displayCalc = lastNumber;
 
     }
 
 
     addOperation(value){
 
-        console.log('A ', isNaN(this.getLastOperation()));
+        console.log('A ', value, isNaN(this.getLastOperation()));
 
         if (isNaN(this.getLastOperation())){
 
@@ -69,23 +183,34 @@
 
             } else if(isNaN(value)) {
 
-                console.log(value);
+                console.log('Outra coisa', value);
 
             } else {
+                //se numero
+                this.pushOperation(value);
 
-                this._operation.push(value);
+                this.setLastNumberToDisplay();
 
             }
 
 
         } else {
-            let newValue = this.getLastOperation().toString() + value.toString();
-            this.setLastOperation(parseInt(newValue));
+
+            if (this.isOperator(value)){
+
+                this.pushOperation(value);
+
+            } else {
+
+                let newValue = this.getLastOperation().toString() + value.toString();
+                this.setLastOperation(parseInt(newValue));
+
+                this.setLastNumberToDisplay();
+
+            }
 
         }
 
-
-        console.log(this._operation);
 
     }
 
@@ -116,16 +241,17 @@
                break;
 
            case 'div':
-               this.addOperation('÷');
+               this.addOperation('/');
                break;
 
            case 'tms':
-               this.addOperation('x');
+               this.addOperation('*');
                break;
 
            case 'eql':
-
+               this.calc();
                break;
+
            case '0':
            case '1':
            case '2':
@@ -202,6 +328,12 @@
     }
 
     set displayCalc(value){
+
+        if (value.toString().length > 11) {
+            this.setError();
+            return false;
+        }
+
         this._displayCalcEl.innerHTML = value;
     }
 
