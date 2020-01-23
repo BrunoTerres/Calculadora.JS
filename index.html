@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vitual Calc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheet/style.css" media="screen" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+</head>
+    <body>
+
+    <div class="calc">
+        <section class="screen">
+            <text class="date"></text>
+            <text class="time"></text>
+            <text class="display" name="display">0</text>
+        </section>
+        <section class="keyboard">
+            <div class="keyboard-keys">
+                <button id="double" class="keyboard-key btn-C">C</button>
+                <button class="keyboard-key btn-bksp">
+                    <i class="material-icons">backspace</i>
+                </button>
+                <button id="color1" class="keyboard-key btn-div">÷</button>
+            </div>
+            <div class="keyboard-keys">
+                <button class="keyboard-key btn-7">7</button>
+                <button class="keyboard-key btn-8">8</button>
+                <button class="keyboard-key btn-9">9</button>
+                <button id="color2" class="keyboard-key btn-tms">x</button>
+            </div>
+            <div class="keyboard-keys">
+                <button class="keyboard-key btn-4">4</button>
+                <button class="keyboard-key btn-5">5</button>
+                <button class="keyboard-key btn-6">6</button>
+                <button id="color3" class="keyboard-key btn-sub">-</button>
+            </div>
+            <div class="keyboard-keys">
+                <button class="keyboard-key btn-1">1</button>
+                <button class="keyboard-key btn-2">2</button>
+                <button class="keyboard-key btn-3">3</button>
+                <button id="color4" class="keyboard-key btn-adc">+</button>
+            </div>
+            <div class="keyboard-keys">
+                <button id="triple" class="keyboard-key btn-0">0</button>
+                <button id="color5" class="keyboard-key btn-eql">=</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/controller/controller.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/main.js"></script>
+
+    </body>
+</html>
